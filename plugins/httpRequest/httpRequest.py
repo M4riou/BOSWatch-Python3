@@ -14,8 +14,7 @@ httpRequest-Plugin to dispatch FMS-, ZVEI- and POCSAG - messages to an URL
 #
 # Imports
 #
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
 import logging # Global logger
 from includes import globalVars  # Global variables
 
@@ -73,8 +72,8 @@ def run(typ,freq,data):
 				#
 				dataCopy = dict(data)
 				for key in dataCopy:
-					if isinstance(dataCopy[key], basestring):
-						dataCopy[key] = urllib.quote(dataCopy[key])
+					if isinstance(dataCopy[key], str):
+						dataCopy[key] = urllib.parse.quote(dataCopy[key])
 				#
 				# Get URLs
 				#
@@ -100,10 +99,10 @@ def run(typ,freq,data):
 
 				for url in urls:
 					try:
-						urllib2.urlopen(url)
-					except urllib2.HTTPError as e:
+						urllib.request.urlopen(url)
+					except urllib.error.HTTPError as e:
     						logging.warning("HTTP response: %s", e.code)
-					except urllib2.URLError as e:
+					except urllib.error.URLError as e:
     						logging.warning("HTTP-specific error: %s", e.args)
 
 			except:
