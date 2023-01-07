@@ -75,19 +75,19 @@ def run(typ,freq,data):
 
 			protocol = globalVars.config.get("fhemCmd", "protocol")
 			logging.debug("protocol: %s", protocol)
-			
+
 			server = globalVars.config.get("fhemCmd", "server")
 			logging.debug("server: %s", server)
-			
+
 			port = globalVars.config.get("fhemCmd", "port")
 			logging.debug("port: %s", port)
-			
+
 			username = globalVars.config.get("fhemCmd", "username")
 			logging.debug("username: %s", username)
-			
+
 			password = globalVars.config.get("fhemCmd", "password")
 			logging.debug("password: %s", password)
-			
+
 			########## User Plugin CODE ##########
 			if typ == "FMS":
 				fhemCommand = globalVars.config.get("fhemCmd", "commandFMS")
@@ -98,12 +98,12 @@ def run(typ,freq,data):
 			else:
 				logging.warning("Invalid Typ: %s", typ)
 				return False
-			
+
 			fhemCommand = wildcardHandler.replaceWildcards(fhemCommand, data)
 			logging.debug("fhemCommand: %s", fhemCommand)
-                        
+
 			fh = fhem.Fhem(server=server, protocol=protocol, port=port, username=username, password=password)
-			
+
 			fh.send_cmd(fhemCommand)
 			del fh
 			########## User Plugin CODE ##########

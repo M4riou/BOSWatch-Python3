@@ -95,8 +95,8 @@ def run(typ,freq,data):
 				data_off = '{"on":false}'
 				url = "http://" + bridgeip + "/api/" + apikey + "/lights/" + deviceid + "/state"
 				logging.debug("hue REST API URL: %s", url)
-				
-				#blinking  
+
+				#blinking
 				for _ in range(repeat):
 					requests.put(url, data=data_on)
 					logging.debug("on for %s seconds", timeon)
