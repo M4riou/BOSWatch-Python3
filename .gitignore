@@ -1,6 +1,7 @@
 *.psd
 *.pyc
 *.log
+*.bak
 config.ini
 log/
 
