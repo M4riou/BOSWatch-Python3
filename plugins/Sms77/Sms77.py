@@ -114,7 +114,7 @@ def run(typ,freq,data):
 			finally:
 				logging.debug("close Sms77-Connection")
 				try:
-					request.close()
+					conn.close()
 				except:
 					pass
 
