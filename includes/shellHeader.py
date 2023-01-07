@@ -10,6 +10,8 @@ Shows the header in shell if quiet mode is not active
 @requires: none
 """
 
+import logging
+
 from includes import globalVars
 
 def printHeader(args):
