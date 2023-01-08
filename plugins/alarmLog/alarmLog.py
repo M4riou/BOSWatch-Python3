@@ -19,7 +19,7 @@ from includes.helper import timeHandler
 from includes.helper import configHandler
 from includes.helper import wildcardHandler
 
-
+# local variables
 alarmlog_path = globalVars.log_path + 'alarms/'
 
 ##
@@ -30,12 +30,13 @@ alarmlog_path = globalVars.log_path + 'alarms/'
 def onLoad():
 
     try:
+        global alarmlog_path
         if configHandler.checkConfig("alarmLog"):
             if globalVars.config.has_option("alarmLog","alarmlog_path"):
-                alarmlog_path = globalVars.config.get("alarmLog","alarmlog_path")
+                alarmlog_path = globalVars.config.get("alarmLog","alarmlog_path") + 'alarms/'
 
             if not os.path.exists(alarmlog_path):
-                os.mkdir(alarmlog_path)
+                os.makedirs(alarmlog_path)
     except:
         logging.error("Initialization Error")
         logging.debug("Initialization Error", exc_info=True)
@@ -54,6 +55,7 @@ def onClose():
 def log(alarmMessage):
 
     try:
+        global alarmlog_path
         with io.open(alarmlog_path + 'alarms-%s.txt' %timeHandler.curtime("%Y_%m_%d", timestamp=""), 'a', encoding='utf8') as f:
             f.write(alarmMessage + '\n')
     except:
