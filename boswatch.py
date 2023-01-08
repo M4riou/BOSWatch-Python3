@@ -347,7 +347,7 @@ try:
 	if not args.test:
 		logging.debug("start decoding")
 		while True:
-			decoded = str(multimon_ng.stdout.readline()) #Get line data from multimon stdout
+			decoded = (multimon_ng.stdout.readline()).decode("utf-8") #Get line data from multimon stdout
 			from includes import decoder
 			decoder.decode(freqConverter.freqToHz(args.freq), decoded)
 
