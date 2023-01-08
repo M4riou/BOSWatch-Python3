@@ -79,7 +79,7 @@ try:
 	#
 	try:
 		logging.debug("reading config file")
-		globalData.config = configparser.SafeConfigParser()
+		globalData.config = configparser.SafeConfigParser(interpolation=None)
 		globalData.config.read("config.ini")
 		# if given loglevel is debug:
 		logging.debug("- [AlarmMonitor]")
