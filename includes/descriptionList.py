@@ -114,7 +114,7 @@ def getDescription(typ, data):
 				resultStr = ricDescribtionList[data] # only SubRIC
 			else:
 				resultStr = ricDescribtionList[data[:-1]] # MainRIC
-				resultStr += " " + ricDescribtionList[data] # SubRIC
+				resultStr += " - " + ricDescribtionList[data] # SubRIC
 		else:
 			logging.warning("Invalid Typ: %s", typ)
 
