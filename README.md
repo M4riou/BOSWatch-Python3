@@ -11,29 +11,13 @@ The intercept of the German BOS radio is **strictly prohibited** and will be pro
 The software was developed using the Multimon-NG code, a function in the real operation can not be guaranteed.
 
 
-### Fast support on https://bwcc.boswatch.de (Mattermost)
-### BW3 in first testing phase - see: https://github.com/BOSWatch/BW3-Core
-
-|Branch|Code Qualität|CI-Build|
-|---|---|---|
-|master|[![Codacy Badge](https://img.shields.io/codacy/grade/d512976554354a199555bd34ed179bb1/master.svg)](https://www.codacy.com/app/Schrolli91/BOSWatch/dashboard?bid=3763821)|[![Build Status](https://travis-ci.org/Schrolli91/BOSWatch.svg?branch=master)](https://travis-ci.org/Schrolli91/BOSWatch)|
-|develop|[![Codacy Badge](https://img.shields.io/codacy/grade/d512976554354a199555bd34ed179bb1/develop.svg)](https://www.codacy.com/app/Schrolli91/BOSWatch/dashboard?bid=3763820)|[![Build Status](https://travis-ci.org/Schrolli91/BOSWatch.svg?branch=develop)](https://travis-ci.org/Schrolli91/BOSWatch)|
-
-
-**Unterstützung gesucht**
-
-Zur Weiterentwicklung des Programms benötigen wir Deine Mithilfe - bitte melde dich per Issue, wenn du Anwender in einem verschlüsselten POCSAG-Netz und im **legalen** Besitz des dazugehörigen Schlüssels bist.
-In der Zukunft wollen wir die Möglichkeit schaffen, codierte Nachrichten zu entschlüsseln (und nur dann, wenn der Schlüssel bekannt ist!), dafür brauchen wir Dich als Tester!
-
 **Readme ist veraltet** - bitte im [Wiki](https://github.com/Schrolli91/BOSWatch/wiki) nachschauen!
 
 
 
 **Please** only use Code from **master**-Branch - thats **the only stable!**
 
-beta-branch is for beta-test of new features
-
-unless you are developer you can use the develop-Branch - may be unstable!
+unless you are developer you can use the devel-Branch - may be unstable!
 
 ### Features
 ##### Implemented features:
