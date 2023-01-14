@@ -42,13 +42,9 @@ def onLoad():
         logging.debug("Initialization Error", exc_info=True)
         raise
 
-    print('AlarmLog Plugin loaded')
-
     return
 
 def onClose():
-
-    print('AlarmLog Plugin closed')
 
     return
 
