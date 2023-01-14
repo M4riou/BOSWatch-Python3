@@ -157,7 +157,7 @@ def decode(freq, decoded):
 
                     # check for double alarm
                     if doubleFilter.checkID("POC", poc_id+poc_sub, poc_text):
-                        data = {"ric":poc_id, "function":poc_sub, "msg":poc_text, "bitrate":bitrate, "description":poc_id, "has_geo":has_geo}
+                        data = {"ric":poc_id, "function":poc_sub, "msg":poc_text, "bitrate":bitrate, "description":poc_id, "description_sub": poc_sub, "has_geo":has_geo}
                         if has_geo == True:
                             data["lon"] = lon
                             data["lat"] = lat
@@ -170,7 +170,8 @@ def decode(freq, decoded):
                         # If enabled, look up description
                         if globalVars.config.getint("POC", "idDescribed"):
                             from includes import descriptionList
-                            data["description"] = descriptionList.getDescription("POC", data["ric"]+data["functionChar"])
+                            data["description"] = descriptionList.getDescription("POC", data["ric"]+data["functionChar"]).split(" - ")[0]
+                            data["description_sub"] = descriptionList.getDescription("POC", data["ric"]+data["functionChar"]).split(" - ")[-1]
 
                         # multicastAlarm processing if enabled and a message without text or delimiter RIC or netIdent_ric received
                         if globalVars.config.getint("multicastAlarm", "multicastAlarm") and data["ric"] != globalVars.config.get("POC", "netIdent_ric") and (data["msg"] == "" or data["ric"] in globalVars.config.get("multicastAlarm", "multicastAlarm_delimiter_ric")):
