@@ -110,7 +110,7 @@ def run(typ,freq,data):
 				}
 			else:
 				logging.warning("Invalid Typ: %s", typ)
-			
+
 			y = json.dumps(x)
 			mqttClient.connect(broker_address)
 			mqttClient.publish(topic,y)

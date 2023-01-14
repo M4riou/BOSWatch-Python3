@@ -19,11 +19,12 @@ import logging
 import logging.handlers
 
 import argparse		# for parse the args
-import ConfigParser	# for parse the config file
+import configparser	# for parse the config file
 import os			# for log mkdir
 import sys			# for py version
 import time			# for time.sleep()
 import subprocess	# for starting rtl_fm and multimon-ng
+import io			# for utf8 encoding
 
 from includes import globalVars  # Global variables
 from includes import MyTimedRotatingFileHandler  # extension of TimedRotatingFileHandler
@@ -35,7 +36,7 @@ from includes.helper import freqConverter
 # Check for exisiting config/config.ini-file
 #
 if not os.path.exists(os.path.dirname(os.path.abspath(__file__))+"/config/config.ini"):
-	print "ERROR: No config.ini found"
+	print("ERROR: No config.ini found")
 	exit(1)
 
 #
@@ -65,7 +66,7 @@ except SystemExit:
 	exit(0)
 except:
 	# we couldn't work without arguments -> exit
-	print "ERROR: cannot parsing the arguments"
+	print("ERROR: cannot parsing the arguments")
 	exit(1)
 
 
@@ -99,7 +100,7 @@ try:
 			os.mkdir(globalVars.log_path)
 	except:
 		# we couldn't work without logging -> exit
-		print "ERROR: cannot initialize paths"
+		print("ERROR: cannot initialize paths")
 		exit(1)
 
 	#
@@ -132,7 +133,7 @@ try:
 
 	except:
 		# we couldn't work without logging -> exit
-		print "ERROR: cannot create logger"
+		print("ERROR: cannot create logger")
 		exit(1)
 
 	# initialization of the logging was fine, continue...
@@ -141,9 +142,9 @@ try:
 		# Clear the logfiles
 		#
 		fh.doRollover()
-		rtl_log = open(globalVars.log_path+"rtl_fm.log", "w")
-		mon_log = open(globalVars.log_path+"multimon.log", "w")
-		rawMmOut = open(globalVars.log_path+"mm_raw.txt", "w")
+		rtl_log = io.open(globalVars.log_path+"rtl_fm.log", "w", encoding="utf8")
+		mon_log = io.open(globalVars.log_path+"multimon.log", "w", encoding="utf8")
+		rawMmOut = io.open(globalVars.log_path+"mm_raw.txt", "w", encoding="utf8")
 		rtl_log.write("")
 		mon_log.write("")
 		rawMmOut.write("")
@@ -215,7 +216,7 @@ try:
 	#
 	try:
 		logging.debug("reading config file")
-		globalVars.config = ConfigParser.ConfigParser()
+		globalVars.config = configparser.ConfigParser(interpolation=None)
 		globalVars.config.read(globalVars.script_path+"/config/config.ini")
 		# if given loglevel is debug:
 		if globalVars.config.getint("BOSWatch","loglevel") == 10:
@@ -347,14 +348,14 @@ try:
 	if not args.test:
 		logging.debug("start decoding")
 		while True:
-			decoded = str(multimon_ng.stdout.readline()) #Get line data from multimon stdout
+			decoded = (multimon_ng.stdout.readline()).decode("utf-8") #Get line data from multimon stdout
 			from includes import decoder
 			decoder.decode(freqConverter.freqToHz(args.freq), decoded)
 
 			# write multimon-ng raw data
 			if globalVars.config.getboolean("BOSWatch","writeMultimonRaw"):
 				try:
-					rawMmOut = open(globalVars.log_path+"mm_raw.txt", "a")
+					rawMmOut = io.open(globalVars.log_path+"mm_raw.txt", "a", encoding="utf8")
 					rawMmOut.write(decoded)
 				except:
 					logging.warning("cannot write raw multimon data")
@@ -362,13 +363,13 @@ try:
 					rawMmOut.close()
 	else:
 		logging.debug("start testing")
-		testFile = open(globalVars.script_path+"/citest/testdata.txt","r")
-		for testData in testFile:
-			if (len(testData.rstrip(' \t\n\r')) > 1) and ("#" not in testData[0]):
-				logging.info("Testdata: %s", testData.rstrip(' \t\n\r'))
-				from includes import decoder
-				decoder.decode(freqConverter.freqToHz(args.freq), testData)
-				#time.sleep(1)
+		with io.open(globalVars.script_path+"/citest/testdata.txt","r", encoding="utf8") as testFile:
+			for testData in testFile:
+				if (len(testData.rstrip(' \t\n\r')) > 1) and ("#" not in testData[0]):
+					logging.info("Testdata: %s", testData.rstrip(' \t\n\r'))
+					from includes import decoder
+					decoder.decode(freqConverter.freqToHz(args.freq), testData)
+					#time.sleep(1)
 		logging.debug("test finished")
 
 except KeyboardInterrupt:

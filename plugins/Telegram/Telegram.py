@@ -129,8 +129,8 @@ def run(typ,freq,data):
 					logging.debug("Geocoding API return status: %s" % gcode_result['status'])
 					logging.debug("Send location via Telegram BOT API")
 					bot.sendLocation('%s' % BOTChatIDAPIKey,
-							 gcode_result[results][0]['geometry']['location']['lat'],
-							 gcode_result[results][0]['geometry']['location']['lng'],
+							 gcode_result['results'][0]['geometry']['location']['lat'],
+							 gcode_result['results'][0]['geometry']['location']['lng'],
 							 disable_notification='true')
 			else:
 				logging.warning("Invalid Typ: %s", typ)

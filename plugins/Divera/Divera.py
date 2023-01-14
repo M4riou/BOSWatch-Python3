@@ -8,8 +8,8 @@ Divera-Plugin to send FMS-, ZVEI- and POCSAG - messages to Divera
 """
 
 import logging  # Global logger
-import httplib  # for the HTTP request
-import urllib
+import http.client  # for the HTTP request
+import urllib.request, urllib.parse, urllib.error
 from includes import globalVars  # Global variables
 
 # from includes.helper import timeHandler
@@ -91,8 +91,8 @@ def run(typ, freq, data):
                 zvei_id = globalVars.config.get("Divera","zvei_id")
 
             elif typ == "POC":
-                if isSignal(data["ric"]): 
-                
+                if isSignal(data["ric"]):
+
                     logging.debug("RIC is net ident")
                     return
                 else:
@@ -109,11 +109,11 @@ def run(typ, freq, data):
                         priority = globalVars.config.get("Divera", "SubD")
                     else:
                         priority = ''
-                        
+
                     text = globalVars.config.get("Divera", "poc_text")
                     title = globalVars.config.get("Divera", "poc_title")
                     ric = globalVars.config.get("Divera", "poc_ric")
-                    
+
 
             else:
                 logging.warning("Invalid type: %s", typ)
@@ -124,13 +124,13 @@ def run(typ, freq, data):
             # Divera-Request
             #
             logging.debug("send Divera for %s", typ)
-            
+
             # Replace wildcards & Logging data to send
             title = wildcardHandler.replaceWildcards(title, data)
             logging.debug("Title   : %s", title)
             text = wildcardHandler.replaceWildcards(text, data)
             logging.debug("Text    : %s", text)
-            
+
             if typ == "FMS":
                 vehicle = wildcardHandler.replaceWildcards(vehicle, data)
                 logging.debug("Vehicle     : %s", vehicle)
@@ -142,7 +142,7 @@ def run(typ, freq, data):
                 logging.debug("ZVEI_ID     : %s", zvei_id)
             else:
                 logging.info("No wildcards to replace and no Typ selected!")
-				
+
             # check priority value
             if (priority != 'false') and (priority != 'true'):
                 logging.info("No Priority set for type '%s'! Skipping Divera-Alarm!", typ)
@@ -152,26 +152,26 @@ def run(typ, freq, data):
             if typ == "FMS":
                 if (vehicle == ''):
                     logging.info("No Vehicle set!")
-            
+
             # Check POC
             elif typ == "POC":
                 if (ric == ''):
                     logging.info("No RIC set!")
-             
-            # Check ZVEI       
+
+            # Check ZVEI
             elif typ == "ZVEI":
                 if (zvei_id == ''):
                     logging.info("No ZVEI_ID set!")
-                    
+
             else:
                 logging.info("No ZVEI, FMS or POC alarm")
-            
-            # start connection to Divera                
+
+            # start connection to Divera
             if typ == "FMS":
                 # start the connection FMS
-                conn = httplib.HTTPSConnection("www.divera247.com:443")
+                conn = http.client.HTTPSConnection("www.divera247.com:443")
                 conn.request("GET", "/api/fms",
-                             urllib.urlencode({
+                             urllib.parse.urlencode({
                                 "accesskey": globalVars.config.get("Divera", "accesskey"),
                                 "vehicle_ric": vehicle,
                                 "status_id": data["status"],
@@ -180,34 +180,34 @@ def run(typ, freq, data):
                                 "text": text,
                                 "priority": priority,
                             }))
-                            
+
             elif typ == "ZVEI":
             # start connection ZVEI; zvei_id in Divera is alarm-RIC!
-                conn = httplib.HTTPSConnection("www.divera247.com:443")
+                conn = http.client.HTTPSConnection("www.divera247.com:443")
                 conn.request("GET", "/api/alarm",
-                            urllib.urlencode({
+                            urllib.parse.urlencode({
                                 "accesskey": globalVars.config.get("Divera", "accesskey"),
                                 "title": title,
                                 "ric": zvei_id,
                                 "text": text,
                                 "priority": priority,
                             }))
-            
+
             elif typ == "POC":
             # start connection POC
-                conn = httplib.HTTPSConnection("www.divera247.com:443")
+                conn = http.client.HTTPSConnection("www.divera247.com:443")
                 conn.request("GET", "/api/alarm",
-                            urllib.urlencode({
+                            urllib.parse.urlencode({
                                 "accesskey": globalVars.config.get("Divera", "accesskey"),
                                 "title": title,
                                 "ric": ric,
                                 "text": text,
                                 "priority": priority,
                             }))
-                                      
-            
+
+
             else:
-                loggin.debug("No Type is set", exc_info=True)
+                logging.debug("No Type is set", exc_info=True)
                 return
 
         except:
@@ -232,7 +232,7 @@ def run(typ, freq, data):
         finally:
             logging.debug("close Divera-Connection")
             try:
-                request.close()
+                conn.close()
             except:
                 pass
 

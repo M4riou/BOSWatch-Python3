@@ -27,7 +27,7 @@ RPi-Display: https://github.com/watterott/RPi-Display
 
 import logging
 import logging.handlers
-import ConfigParser
+import configparser
 
 import os
 import time
@@ -38,7 +38,7 @@ import pygame
 
 import globalData
 
-try: 
+try:
 	#
 	# Logging
 	#
@@ -48,18 +48,18 @@ try:
 		if not os.path.exists(log_path):
 			os.mkdir(log_path)
 
-		# init logger	
+		# init logger
 		myLogger = logging.getLogger()
 		myLogger.setLevel(logging.DEBUG)
 		formatter = logging.Formatter('%(asctime)s - %(module)-15s [%(levelname)-8s] %(message)s', '%d.%m.%Y %H:%M:%S')
 
 		# display logger
 		ch = logging.StreamHandler()
-		ch.setLevel(logging.INFO) 
-		#ch.setLevel(logging.DEBUG) 
+		ch.setLevel(logging.INFO)
+		#ch.setLevel(logging.DEBUG)
 		ch.setFormatter(formatter)
-		myLogger.addHandler(ch)		
-		
+		myLogger.addHandler(ch)
+
 		# fileLogger:
 		fh = logging.handlers.TimedRotatingFileHandler(log_path+"alarmMonitor.log", "midnight", interval=1, backupCount=7)
 		fh.setLevel(logging.DEBUG)
@@ -73,13 +73,13 @@ try:
 		logging.debug("cannot initialise logging", exc_info=True)
 		exit(1)
 
-	
+
 	#
 	# Read config.ini
 	#
 	try:
 		logging.debug("reading config file")
-		globalData.config = ConfigParser.SafeConfigParser()
+		globalData.config = configparser.SafeConfigParser(interpolation=None)
 		globalData.config.read("config.ini")
 		# if given loglevel is debug:
 		logging.debug("- [AlarmMonitor]")
@@ -93,7 +93,7 @@ try:
 		logging.critical("cannot read config file")
 		logging.debug("cannot read config file", exc_info=True)
 		exit(1)
-	
+
 	#
 	# set environment for display and touchscreen
 	#
@@ -102,7 +102,7 @@ try:
 	os.environ["SDL_MOUSEDRV"] = "TSLIB"
 
 	#
-	# start threads 
+	# start threads
 	#
 	try:
 		from displayServices import displayPainter, autoTurnOffDisplay, eventHandler
@@ -140,7 +140,7 @@ try:
 	logging.debug("-- functionCharTestAlarm: %s", functionCharTestAlarm)
 	functionCharAlarm     = [str(x.strip()) for x in globalData.config.get("AlarmMonitor","functionCharAlarm").replace(";", ",").split(",")]
 	logging.debug("-- functionCharAlarm: %s", functionCharAlarm)
-	
+
 	#
 	# try to read History from MySQL-DB
 	#
@@ -150,14 +150,14 @@ try:
 
 			for key,val in globalData.config.items("MySQL"):
 				logging.debug("-- %s = %s", key, val)
-			
+
 			# Connect to DB
 			logging.debug("connect to MySQL")
 			connection = mysql.connector.connect(host = globalData.config.get("MySQL","dbserver"), user = globalData.config.get("MySQL","dbuser"), passwd = globalData.config.get("MySQL","dbpassword"), db = globalData.config.get("MySQL","database"), charset='utf8')
 			cursor = connection.cursor()
 			logging.debug("MySQL connected")
 
-			# read countKeepAlive 
+			# read countKeepAlive
 			# precondition: keepAliveRICs set
 			if (len(keepAliveRICs) > 0):
 				sql = "SELECT COUNT(*) FROM "+globalData.config.get("MySQL","tablePOC")+" WHERE ric IN ("+globalData.config.get("AlarmMonitor","keepAliveRICs")+")"
@@ -167,7 +167,7 @@ try:
 					globalData.countKeepAlive = result
 				logging.debug("-- countKeepAlive: %s", globalData.countKeepAlive)
 
-			# read countAlarm 
+			# read countAlarm
 			# precondition: alarmRics and functionChar set
 			if (len(alarmRICs) > 0) and (len(functionCharAlarm) > 0):
 				sql = "SELECT COUNT(*) FROM "+globalData.config.get("MySQL","tablePOC")+" WHERE ric IN ("+globalData.config.get("AlarmMonitor","alarmRICs")+")"
@@ -181,7 +181,7 @@ try:
 					globalData.countAlarm = result
 				logging.debug("-- countAlarm: %s", globalData.countAlarm)
 
-			# read countTestAlarm 
+			# read countTestAlarm
 			# precondition: alarmRics and functionCharTestAlarm set
 			if (len(alarmRICs) > 0) and (len(functionCharTestAlarm) > 0):
 				sql = "SELECT COUNT(*) FROM "+globalData.config.get("MySQL","tablePOC")+" WHERE ric IN ("+globalData.config.get("AlarmMonitor","alarmRICs")+")"
@@ -217,7 +217,7 @@ try:
 					data['description'] = description
 					globalData.alarmHistory.append(data)
 				logging.debug("-- history data loaded: %s", len(globalData.alarmHistory))
-						
+
 			logging.info("history loaded from database")
 		# if db is enabled
 		pass
@@ -249,10 +249,10 @@ try:
 		logging.error("cannot initialise alarm sound")
 		logging.debug("cannot initialise alarm sound", exc_info=True)
 		pass
-				
+
 	globalData.startTime = int(time.time())
 	logging.info("alarmMonitor started - on standby")
-		
+
 	#
 	# Main Program
 	# (Threads will set abort to True if an error occurs)
@@ -277,7 +277,7 @@ try:
 				logging.debug("Alarmmessage arrived")
 				logging.debug("-- ric: %s", parsed_json['ric'])
 				logging.debug("-- functionChar: %s", parsed_json['functionChar'])
-				
+
 				# current time for this loop:
 				curtime = int(time.time())
 
@@ -297,7 +297,7 @@ try:
 						logging.info("--> Alarm: %s", parsed_json['ric'])
 						globalData.screenBackground = pygame.Color(globalData.config.get("AlarmMonitor","colourRed"))
 						globalData.countAlarm += 1
-						
+
 					# forward data to alarmMonitor
 					globalData.data = parsed_json
 					globalData.data['timestamp'] = curtime
@@ -313,22 +313,22 @@ try:
 					# tell alarm-thread to turn on the display
 					globalData.navigation = "alarmPage"
 					globalData.showDisplay = True;
-					
+
 					# play alarmSound...
 					if not alarmSound == False:
 						# ... but only one per time...
 						if pygame.mixer.get_busy() == False:
 							alarmSound.play()
 							logging.debug("sound started")
-					
+
 			except KeyError:
 				# we will ignore waste in json_string
 				logging.warning("No RIC found: %s", json_string)
 				pass
-	
+
 except KeyboardInterrupt:
-	logging.warning("Keyboard Interrupt")	
-	exit(0)	
+	logging.warning("Keyboard Interrupt")
+	exit(0)
 except SystemExit:
 	logging.warning("SystemExit received")
 	exit(0)
@@ -339,20 +339,20 @@ finally:
 		logging.info("socketServer shuting down")
 		globalData.running = False
 		sock.close()
-		logging.debug("socket closed") 
+		logging.debug("socket closed")
 		if not alarmSound == False:
 			pygame.mixer.quit()
-			logging.debug("mixer closed") 
+			logging.debug("mixer closed")
 		if connection:
 			connection.close()
-			logging.debug("MySQL closed") 
+			logging.debug("MySQL closed")
 		time.sleep(0.5)
-		logging.debug("exiting socketServer")		
+		logging.debug("exiting socketServer")
 	except:
-		logging.warning("failed in clean-up routine")	
-	finally:	
+		logging.warning("failed in clean-up routine")
+	finally:
 		# Close Logging
-		logging.debug("close Logging")	
+		logging.debug("close Logging")
 		logging.info("socketServer exit()")
 		logging.shutdown()
 		ch.close()
