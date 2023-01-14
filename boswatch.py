@@ -24,6 +24,7 @@ import os			# for log mkdir
 import sys			# for py version
 import time			# for time.sleep()
 import subprocess	# for starting rtl_fm and multimon-ng
+import io			# for utf8 encoding
 
 from includes import globalVars  # Global variables
 from includes import MyTimedRotatingFileHandler  # extension of TimedRotatingFileHandler
@@ -141,9 +142,9 @@ try:
 		# Clear the logfiles
 		#
 		fh.doRollover()
-		rtl_log = open(globalVars.log_path+"rtl_fm.log", "w")
-		mon_log = open(globalVars.log_path+"multimon.log", "w")
-		rawMmOut = open(globalVars.log_path+"mm_raw.txt", "w")
+		rtl_log = io.open(globalVars.log_path+"rtl_fm.log", "w", encoding="utf8")
+		mon_log = io.open(globalVars.log_path+"multimon.log", "w", encoding="utf8")
+		rawMmOut = io.open(globalVars.log_path+"mm_raw.txt", "w", encoding="utf8")
 		rtl_log.write("")
 		mon_log.write("")
 		rawMmOut.write("")
@@ -354,7 +355,7 @@ try:
 			# write multimon-ng raw data
 			if globalVars.config.getboolean("BOSWatch","writeMultimonRaw"):
 				try:
-					rawMmOut = open(globalVars.log_path+"mm_raw.txt", "a")
+					rawMmOut = io.open(globalVars.log_path+"mm_raw.txt", "a", encoding="utf8")
 					rawMmOut.write(decoded)
 				except:
 					logging.warning("cannot write raw multimon data")
@@ -362,13 +363,13 @@ try:
 					rawMmOut.close()
 	else:
 		logging.debug("start testing")
-		testFile = open(globalVars.script_path+"/citest/testdata.txt","r")
-		for testData in testFile:
-			if (len(testData.rstrip(' \t\n\r')) > 1) and ("#" not in testData[0]):
-				logging.info("Testdata: %s", testData.rstrip(' \t\n\r'))
-				from includes import decoder
-				decoder.decode(freqConverter.freqToHz(args.freq), testData)
-				#time.sleep(1)
+		with io.open(globalVars.script_path+"/citest/testdata.txt","r", encoding="utf8") as testFile:
+			for testData in testFile:
+				if (len(testData.rstrip(' \t\n\r')) > 1) and ("#" not in testData[0]):
+					logging.info("Testdata: %s", testData.rstrip(' \t\n\r'))
+					from includes import decoder
+					decoder.decode(freqConverter.freqToHz(args.freq), testData)
+					#time.sleep(1)
 		logging.debug("test finished")
 
 except KeyboardInterrupt:
