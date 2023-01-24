@@ -4,6 +4,7 @@
 *.bak
 config.ini
 log/
+hue_info.txt
 
 \.project
 
