@@ -47,28 +47,9 @@ echo "So you have to make up manually if you want to use MySQL support"
 boswatchpath=/opt/boswatch
 boswatch_install_path=/opt/boswatch_install
 reboot=false
+update=false
+doBackup=false
 didBackup=false
-
-# Checking for Backup
-# check for old version (for the old ones...)
-if [ -f $boswatchpath/BOSWatch/boswatch.py ]; then
-	echo "Old installation found!"
-	echo "A backup will be copied to $boswatchpath/old"
-
-	mkdir /tmp/boswatch
-	mv $boswatchpath/BOSWatch/* /tmp/boswatch/
-	didBackup=true
-fi
-
-#and the future...
-if [ -f $boswatchpath/boswatch.py ]; then
-	echo "Old installation found!"
-	echo "A backup will be copied to $boswatchpath/old"
-
-	mkdir /tmp/boswatch
-	mv $boswatchpath/* /tmp/boswatch/
-	didBackup=true
-fi
 
 # Check for Flags in command line
 for (( i=1; i<=$#; i=$i+2 )); do
@@ -87,9 +68,42 @@ for (( i=1; i<=$#; i=$i+2 )); do
 
       -p|--path)    echo " !!! WARNING: you'll install BOSWATCH to alternative path !!! "; boswatchpath=$arg2 ;;
 
+      -bak|--backup) doBackup=true ;;
+
       *) echo "Internal error!" ; exit 1 ;;
     esac
 done
+
+# Checking for Backup
+# check for old version (for the old ones...)
+if [ -f $boswatchpath/BOSWatch/boswatch.py ]; then
+	echo "Old installation found! BOSWatch will be updated!"
+  echo "!!! IMPORTANT: if you applied changes to the code, please check for merge errors after the update !!!"
+  update=true
+
+  if [  $doBackup = "true"  ]; then
+    echo "A backup will be copied to $boswatchpath/old"
+
+    mkdir /tmp/boswatch
+    mv $boswatchpath/BOSWatch/* /tmp/boswatch/
+    didBackup=true
+  fi
+fi
+
+#and the future...
+if [ -f $boswatchpath/boswatch.py ]; then
+	echo "Old installation found! BOSWatch will be updated!"
+  echo "!!! IMPORTANT: if you applied changes to the code, please check for merge errors after the update !!!"
+  update=true
+
+  if [  $doBackup = "true"  ]; then
+    echo "A backup will be copied to $boswatchpath/old"
+
+    mkdir /tmp/boswatch
+    mv $boswatchpath/* /tmp/boswatch/
+    didBackup=true
+  fi
+fi
 
 # Create default paths
 mkdir -p $boswatchpath
@@ -119,12 +133,25 @@ tput cup 15 5
 echo "-> download BOSWatch-Python3..........."
 cd $boswatchpath/
 
-case $branch in
-  "dev") git clone -b devel https://github.com/M4riou/BOSWatch-Python3 . >> $boswatch_install_path/setup_log.txt 2>&1 && \
-    exitcodefunction $? git-clone BOSWatch-develop ;;
-  *) git clone -b master https://github.com/M4riou/BOSWatch-Python3 . >> $boswatch_install_path/setup_log.txt 2>&1 && \
-    exitcodefunction $? git-clone BOSWatch ;;
-esac
+if [ $update = "false" ]; then
+  case $branch in
+    "dev") git clone -b devel https://github.com/M4riou/BOSWatch-Python3.git . >> $boswatch_install_path/setup_log.txt 2>&1 && \
+      exitcodefunction $? git-clone BOSWatch-develop ;;
+    *) git clone -b master https://github.com/M4riou/BOSWatch-Python3.git . >> $boswatch_install_path/setup_log.txt 2>&1 && \
+      exitcodefunction $? git-clone BOSWatch ;;
+  esac
+else
+  git init -b master >> $boswatch_install_path/setup_log.txt 2>&1
+  git remote add origin https://github.com/M4riou/BOSWatch-Python3.git >> $boswatch_install_path/setup_log.txt 2>&1
+  case $branch in
+    "dev") git checkout devel && \
+      git pull -X ours https://github.com/M4riou/BOSWatch-Python3.git >> $boswatch_install_path/setup_log.txt 2>&1 && \
+      exitcodefunction $? git-pull BOSWatch-develop ;;
+    *) git checkout master && \
+      git pull -X ours https://github.com/M4riou/BOSWatch-Python3.git >> $boswatch_install_path/setup_log.txt 2>&1 && \
+      exitcodefunction $? git-pull BOSWatch ;;
+  esac
+fi
 
 # Download RTL-SDR
 tput cup 13 15
