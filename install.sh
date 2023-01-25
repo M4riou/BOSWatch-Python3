@@ -78,7 +78,7 @@ done
 # check for old version (for the old ones...)
 if [ -f $boswatchpath/BOSWatch/boswatch.py ]; then
 	echo "Old installation found! BOSWatch will be updated!"
-  echo "!!! IMPORTANT: if you applied changes to the code, please check for merge errors after the update !!!"
+  echo "!!! IMPORTANT: if you applied changes to the code, please check for merged changes after the update !!!"
   update=true
 
   if [  $doBackup = "true"  ]; then
@@ -93,7 +93,7 @@ fi
 #and the future...
 if [ -f $boswatchpath/boswatch.py ]; then
 	echo "Old installation found! BOSWatch will be updated!"
-  echo "!!! IMPORTANT: if you applied changes to the code, please check for merge errors after the update !!!"
+  echo "!!! IMPORTANT: if you applied changes to the code, please check for merged changes after the update !!!"
   update=true
 
   if [  $doBackup = "true"  ]; then
@@ -142,13 +142,12 @@ if [ $update = "false" ]; then
   esac
 else
   git init -b master >> $boswatch_install_path/setup_log.txt 2>&1
-  git remote add origin https://github.com/M4riou/BOSWatch-Python3.git >> $boswatch_install_path/setup_log.txt 2>&1
+  git add . >> $boswatch_install_path/setup_log.txt 2>&1
+  git commit -m "Before Update Commit" >> $boswatch_install_path/setup_log.txt 2>&1
   case $branch in
-    "dev") git checkout devel && \
-      git pull -X ours https://github.com/M4riou/BOSWatch-Python3.git >> $boswatch_install_path/setup_log.txt 2>&1 && \
+    "dev") git pull -X ours https://github.com/M4riou/BOSWatch-Python3.git devel >> $boswatch_install_path/setup_log.txt 2>&1 && \
       exitcodefunction $? git-pull BOSWatch-develop ;;
-    *) git checkout master && \
-      git pull -X ours https://github.com/M4riou/BOSWatch-Python3.git >> $boswatch_install_path/setup_log.txt 2>&1 && \
+    *) git pull -X ours https://github.com/M4riou/BOSWatch-Python3.git master >> $boswatch_install_path/setup_log.txt 2>&1 && \
       exitcodefunction $? git-pull BOSWatch ;;
   esac
 fi
