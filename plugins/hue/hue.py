@@ -342,6 +342,25 @@ def run(typ,freq,data):
 									data_on_json.update(scene_json)
 
 									data_on = json.dumps(data_on_json)
+								else:
+									data_on_json = json.loads(data_on)
+									scene_json = current_states["lights"][d_id]["state"]
+
+									del scene_json['on']
+
+									del scene_json['hue']
+									del scene_json['sat']
+									del scene_json['effect']
+									del scene_json['xy']
+
+									del scene_json['alert']
+									del scene_json['colormode']
+									del scene_json['mode']
+									del scene_json['reachable']
+
+									data_on_json.update(scene_json)
+
+									data_on = json.dumps(data_on_json)
 
 							elif (device_type == "color light") or (device_type == "extended color light"):
 
@@ -365,6 +384,25 @@ def run(typ,freq,data):
 									data_on_json.update(scene_json)
 
 									data_on = json.dumps(data_on_json)
+								else:
+									data_on_json = json.loads(data_on)
+									scene_json = current_states["lights"][d_id]["state"]
+
+									del scene_json['on']
+
+									del scene_json['hue']
+									del scene_json['sat']
+									del scene_json['effect']
+									del scene_json['ct']
+
+									del scene_json['alert']
+									del scene_json['colormode']
+									del scene_json['mode']
+									del scene_json['reachable']
+
+									data_on_json.update(scene_json)
+
+									data_on = json.dumps(data_on_json)
 
 							elif device_type == "dimmable light":
 
@@ -381,6 +419,25 @@ def run(typ,freq,data):
 
 									del scene_json['ct']
 									del scene_json['xy']
+
+									data_on_json.update(scene_json)
+
+									data_on = json.dumps(data_on_json)
+								else:
+									data_on_json = json.loads(data_on)
+									scene_json = current_states["lights"][d_id]["state"]
+
+									del scene_json['on']
+
+									del scene_json['hue']
+									del scene_json['sat']
+									del scene_json['effect']
+									del scene_json['xy']
+									del scene_json['ct']
+									del scene_json['alert']
+									del scene_json['colormode']
+									del scene_json['mode']
+									del scene_json['reachable']
 
 									data_on_json.update(scene_json)
 
@@ -426,6 +483,25 @@ def run(typ,freq,data):
 								scene_json = json.loads(scene)
 
 								del scene_json["ct"]
+
+								data_on_json.update(scene_json)
+
+								data_on = json.dumps(data_on_json)
+							else:
+								data_on_json = json.loads(data_on)
+								scene_json = current_states["lights"][d_id]["state"]
+
+								del scene_json['on']
+
+								del scene_json['hue']
+								del scene_json['sat']
+								del scene_json['effect']
+								del scene_json['ct']
+
+								del scene_json['alert']
+								del scene_json['colormode']
+								del scene_json['mode']
+								del scene_json['reachable']
 
 								data_on_json.update(scene_json)
 

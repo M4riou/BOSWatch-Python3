@@ -5,6 +5,7 @@
 config.ini
 log/
 hue_info.txt
+poc.csv
 
 \.project
 
