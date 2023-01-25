@@ -115,7 +115,7 @@ def convertToUTF8(inputString = ""):
 			if isinstance(inputString, str):
 				logging.debug("-- unicode")
 				# ... then return it as UTF-8
-				uft8String = decodedString.encode('UTF-8')
+				uft8String = inputString.encode('UTF-8')
 				return uft8String
 
 			# 2. check given inputString is already UTF-8...
