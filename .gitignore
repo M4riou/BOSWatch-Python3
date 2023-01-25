@@ -5,6 +5,7 @@
 config.ini
 log/
 hue_info.txt
+setup_log.txt
 
 \.project
 
