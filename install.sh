@@ -12,7 +12,7 @@ function exitcodefunction {
     echo "Action: $action on $module failed."
     echo "Exitcode: $errorcode"
     echo ""
-    echo " -> If you want to open an issue at https://github.com/Schrolli91/BOSWatch/issues"
+    echo " -> If you want to open an issue at https://github.com/M4riou/BOSWatch-Python3/issues"
     echo "    please post the logfile, located at $boswatch_install_path/setup_log.txt"
     exit 1
   else
@@ -29,7 +29,8 @@ echo "   / __  / / / /\__ \| | /| / / __  / __/ ___/ __ \ "
 echo "  / /_/ / /_/ /___/ /| |/ |/ / /_/ / /_/ /__/ / / / "
 echo " /_____/\____//____/ |__/|__/\__,_/\__/\___/_/ /_/  "
 echo "            German BOS Information Script           "
-echo "                 by Bastian Schroll                 "
+echo "             Original by Bastian Schroll            "
+echo "          Python 3 Version by Marius Kortmann       "
 echo ""
 
 # Make sure only root can run our script
@@ -115,13 +116,13 @@ exitcodefunction $? download stuff
 tput cup 13 15
 echo "[ 3/9] [###------]"
 tput cup 15 5
-echo "-> download BOSWatch..................."
+echo "-> download BOSWatch-Python3..........."
 cd $boswatchpath/
 
 case $branch in
-  "dev") git clone -b develop https://github.com/Schrolli91/BOSWatch . >> $boswatch_install_path/setup_log.txt 2>&1 && \
+  "dev") git clone -b devel https://github.com/M4riou/BOSWatch-Python3 . >> $boswatch_install_path/setup_log.txt 2>&1 && \
     exitcodefunction $? git-clone BOSWatch-develop ;;
-  *) git clone -b master https://github.com/Schrolli91/BOSWatch . >> $boswatch_install_path/setup_log.txt 2>&1 && \
+  *) git clone -b master https://github.com/M4riou/BOSWatch-Python3 . >> $boswatch_install_path/setup_log.txt 2>&1 && \
     exitcodefunction $? git-clone BOSWatch ;;
 esac
 
