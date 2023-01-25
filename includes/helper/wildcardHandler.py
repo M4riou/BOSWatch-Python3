@@ -8,6 +8,7 @@ for direct use in plugins to save code
 
 @author: Bastian Schroll
 @author: Jens Herrmann
+@author: Marius Kortmann
 """
 
 import logging

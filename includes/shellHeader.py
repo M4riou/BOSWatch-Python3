@@ -6,6 +6,7 @@ Shows the header in shell if quiet mode is not active
 
 @author: Bastian Schroll
 @author: Jens Herrmann
+@author: Marius Kortmann
 
 @requires: none
 """
@@ -30,7 +31,8 @@ def printHeader(args):
 		print("  / /_/ / /_/ /___/ /| |/ |/ / /_/ / /_/ /__/ / / / ")
 		print(" /_____/\____//____/ |__/|__/\__,_/\__/\___/_/ /_/  ")
 		print("            German BOS Information Script           ")
-		print("          by Bastian Schroll, Jens Herrmann         ")
+		print("      Original by Bastian Schroll, Jens Herrmann    ")
+		print("          Python 3 Version by Marius Kortmann       ")
 		print("")
 		print("SW Version:	"+globalVars.versionNr)
 		print("Branch:		"+globalVars.branch)
