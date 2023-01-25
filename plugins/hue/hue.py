@@ -169,7 +169,7 @@ def hue_blink(target: str, url, device_type, data_on, data_off, blink, repeat, t
 
 			blink_data_on = json.dumps(blink_data_on_json)
 
-	elif device_type == (device_type == "color light") or (device_type == "extended color light"):
+	elif (device_type == "color light") or (device_type == "extended color light") or (device_type == "group"):
 
 		# Check if selected are lights already at the desired scene and change the brightness to make
 		# the blinking noticeable
@@ -460,6 +460,9 @@ def run(typ,freq,data):
 
 				# Check if at least one Group has been selected
 				if group_dict:
+
+					device_type = "group"
+
 					for g_id in group_dict.keys():
 
 						# Check if a thread to control the selected Group is already active
@@ -489,19 +492,17 @@ def run(typ,freq,data):
 								data_on = json.dumps(data_on_json)
 							else:
 								data_on_json = json.loads(data_on)
-								scene_json = current_states["lights"][d_id]["state"]
+								scene_json = current_states["groups"][g_id]["action"]
 
 								del scene_json['on']
 
 								del scene_json['hue']
 								del scene_json['sat']
 								del scene_json['effect']
-								del scene_json['ct']
 
+								del scene_json['ct']
 								del scene_json['alert']
 								del scene_json['colormode']
-								del scene_json['mode']
-								del scene_json['reachable']
 
 								data_on_json.update(scene_json)
 
@@ -510,7 +511,7 @@ def run(typ,freq,data):
 							# Create Thread and start it
 							url = "http://" + bridgeip + "/api/" + apikey + "/groups/" + g_id + "/action"
 							target_device = "GroupID {0}".format(g_id)
-							thread_args = (target_device, url, data_on, data_off, group_dict[g_id], repeat, timeon, timeoff, keepon)
+							thread_args = (target_device, url, device_type, data_on, data_off, group_dict[g_id], repeat, timeon, timeoff, keepon)
 							t = threading.Thread(name=thread_name, target=hue_blink, args=thread_args)
 							t.start()
 
