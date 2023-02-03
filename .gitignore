@@ -3,6 +3,7 @@
 *.log
 *.bak
 config.ini
+poc.csv
 log/
 
 \.project
