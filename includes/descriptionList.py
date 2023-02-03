@@ -12,6 +12,7 @@ Function to expand the dataset with a description.
 import logging # Global logger
 import csv # for loading the description files
 import re # for matching IDs with a regular expression
+import io
 
 from includes import globalVars  # Global variables
 from includes.helper import stringConverter
@@ -37,7 +38,7 @@ def loadCSV(typ, idField):
 	resultList = {}
 	try:
 		logging.debug("-- loading %s.csv", typ)
-		with open(globalVars.script_path+'/csv/'+typ+'.csv') as csvfile:
+		with io.open(globalVars.script_path+'/csv/'+typ+'.csv', encoding="UTF-8") as csvfile:
 			# DictReader expected structure described in first line of csv-file
 			reader = csv.DictReader(csvfile)
 			for row in reader:
@@ -45,7 +46,7 @@ def loadCSV(typ, idField):
 				# only import rows with an integer as id, allow subrics though
 				if re.match("^[0-9A-F]+$", row[idField], re.IGNORECASE):
 					try:
-						resultList[row[idField].lower()] = stringConverter.convertToUTF8(row['description'])
+						resultList[row[idField].lower()] = row['description']
 					except:
 						# skip entry in case of an exception
 						pass
